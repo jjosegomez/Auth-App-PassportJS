@@ -12,7 +12,7 @@ const password = 'admin';
 const cluster = 'portfoliocluster';
 const dbname = 'Users';
 
-mongoose.connect(`"mongodb+srv://${username}:${password}@${cluster}.8oseeyj.mongodb.net/?retryWrites=true&w=majority"`, {
+mongoose.connect(`mongodb+srv://${username}:${password}@${cluster}.8oseeyj.mongodb.net/?retryWrites=true&w=majority`, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
