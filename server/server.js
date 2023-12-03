@@ -4,6 +4,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
+const cors = require('cors');
 
 
 // Connect to MongoDB
@@ -12,10 +13,7 @@ const password = 'admin';
 const cluster = 'portfoliocluster';
 const dbname = 'Users';
 
-mongoose.connect(`mongodb+srv://${username}:${password}@${cluster}.8oseeyj.mongodb.net/?retryWrites=true&w=majority`, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
+mongoose.connect(`mongodb+srv://${username}:${password}@${cluster}.8oseeyj.mongodb.net/?retryWrites=true&w=majority`);
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -26,7 +24,7 @@ db.once('open', function() {
 
 // User model
 const UserSchema = new mongoose.Schema({
-  username: String,
+  email: String,
   password: String
 });
 
@@ -62,17 +60,18 @@ passport.deserializeUser(function(id, done) {
 
 // Express application setup
 const app = express();
-app.use(session({ secret: 'your secret', resave: false, saveUninitialized: false }));
+app.use(cors());
+app.use(session({ secret: 'test123', resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes
 // Registration
 app.post('/register', (req, res) => {
-  bcrypt.hash(req.body.password, 10, (err, hashedPass) => {
+  bcrypt.hash(req.body.data.password, 10, (err, hashedPass) => {
     if (err) throw err;
     const newUser = new User({
-      username: req.body.username,
+      username: req.body.data.email,
       password: hashedPass
     });
 
@@ -80,6 +79,7 @@ app.post('/register', (req, res) => {
       if (err) {
         res.status(500).send('Error registering new user');
       } else {
+        console.log("user registered!")
         res.redirect('/login');
       }
     });
@@ -100,7 +100,8 @@ app.get('/logout', (req, res) => {
 });
 
 // Starting the server
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running at http://localhost:${PORT}`);
 });
+

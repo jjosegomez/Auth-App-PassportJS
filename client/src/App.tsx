@@ -1,5 +1,11 @@
 import { useState } from 'react'
+import axios from 'axios';
 import './App.css'
+
+type User = {
+  email: String,
+  password: String
+}
 
 function App() {
   const [email, setEmail] = useState<string>("")
@@ -8,11 +14,39 @@ function App() {
   function handleLogin(e:React.FormEvent<HTMLFormElement>){
     e.preventDefault()
     console.log("Login", email, password)
+
+    const url:string = "http://localhost:3000/login"
+    const data:User = {
+      email: email,
+      password: password
+    }
+
+    try {
+      const response = axios.post(url,data)
+      console.log(response)
+    } catch (error){
+      console.log(`error making post request. ${error}`)
+    }
+
   }
 
   function handleRegister(e:React.FormEvent<HTMLFormElement>){
     e.preventDefault()
     console.log("Register", email, password)
+
+    const url:string = "http://localhost:3000/register"
+    const data:User = {
+      email: email,
+      password: password
+    }
+
+    try {
+      const response = axios.post(url,data)
+      console.log(response)
+    } catch (error){
+      console.log(`error making post request. ${error}`)
+    }
+
   }
 
   return (
